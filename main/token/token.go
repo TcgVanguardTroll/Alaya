@@ -1,18 +1,30 @@
 package token
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Type string
 
 type Token struct {
 	TokenType  Type
-	TokenValue string
-	linenumber int
-	position   int
+	TokenValue byte
+	Position   int
+	Current    string
 }
 
-func (t Token) toString() string {
-	return fmt.Sprintf("Token(%s,%s)", t.TokenType, t.TokenValue)
+func (t Token) string() string {
+	return fmt.Sprintf("Token(%s,%b)", t.TokenType, t.TokenValue)
+
+}
+func New(TokenType Type, TokenValue byte) Token {
+	var currentToken = Token{
+		TokenType,
+		TokenValue,
+		0,
+		nil,
+	}
+	return currentToken
 
 }
 
@@ -23,6 +35,7 @@ func (t Token) toString() string {
 
 const (
 	ILLEGAL = "ILLEGAL"
+	INTEGER = "INTEGER"
 	EOF     = "EOF"
 
 	//	Keywords
