@@ -3,7 +3,7 @@ package tokenizer
 import (
 	"Alaya/main/token"
 	"errors"
-	"unicode"
+	"strconv"
 )
 
 /*
@@ -21,6 +21,11 @@ type Tokenizer struct {
 	currentToken token.Token
 }
 
+func isNumeric(s string) bool {
+	_, err := strconv.ParseFloat(s, 64)
+	return err == nil
+}
+
 func New(input string) *Tokenizer {
 	var newTokenizer = &Tokenizer{text: input}
 	newTokenizer.readChar()
@@ -34,9 +39,9 @@ func (t Tokenizer) Error() error {
 
 func (t *Tokenizer) readChar() {
 	if t.nextPosition >= len(t.text) {
-		t.currentToken.TokenValue = 0
+		t.currentToken.TokenValue = string(0)
 	} else {
-		t.currentToken.TokenValue = t.text[t.nextPosition]
+		t.currentToken.TokenValue = string(t.text[t.nextPosition])
 	}
 	t.position = t.nextPosition
 	t.nextPosition += 1
@@ -45,49 +50,51 @@ func (t *Tokenizer) readChar() {
 func (t *Tokenizer) GetNextToken() token.Token {
 	var currentToken token.Token
 	var currentByte = t.currentToken.TokenValue
-	if currentByte == 0 {
+	if currentByte == string(0) {
 		currentToken = token.New(token.EOF, currentByte)
-	} else if unicode.IsDigit(rune(currentByte)) {
+	} else if isNumeric(currentByte) {
 		currentToken = token.New(token.INTEGER, currentByte)
-	} else if '+' == currentByte {
+	} else if "+" == currentByte {
 		currentToken = token.New(token.PLUS, currentByte)
-	} else if '=' == currentByte {
+	} else if "=" == currentByte {
 		currentToken = token.New(token.AS, currentByte)
-	} else if '(' == currentByte {
+	} else if "(" == currentByte {
 		currentToken = token.New(token.LPAREN, currentByte)
-	} else if ')' == currentByte {
+	} else if ")" == currentByte {
 		currentToken = token.New(token.RPAREN, currentByte)
-	} else if ';' == currentByte {
+	} else if ";" == currentByte {
 		currentToken = token.New(token.SEMICOLON, currentByte)
-	} else if ',' == currentByte {
+	} else if "," == currentByte {
 		currentToken = token.New(token.COMMA, currentByte)
-	} else if '}' == currentByte {
+	} else if "}" == currentByte {
 		currentToken = token.New(token.RBRACE, currentByte)
-	} else if '{' == currentByte {
+	} else if "{" == currentByte {
 		currentToken = token.New(token.LBRACE, currentByte)
 	}
 	t.readChar()
 	return currentToken
 
 }
-func (t *Tokenizer) consume(tokenToEat token.Type) {
+func (t Tokenizer) consume(tokenToEat token.Type) {
 	if t.currentToken.TokenType == tokenToEat {
 		t.currentToken = t.GetNextToken()
 	}
 }
 
-func (t *Tokenizer) toExpression() byte {
+func (t Tokenizer) toExpression() int {
 	t.currentToken = t.GetNextToken()
 
 	var left = t.currentToken
 	t.consume(token.INTEGER)
 
-	var _ = t.currentToken
-	t.consume(token.PLUS)
+	_ = t.currentToken
+	t.readChar()
 
 	var right = t.currentToken
-	t.consume(token.INTEGER)
+	t.readChar()
 
-	var res = left.TokenValue + right.TokenValue
-	return res
+	var rightRes, _ = strconv.Atoi(right.TokenValue)
+	var leftRes, _ = strconv.Atoi(left.TokenValue)
+
+	return leftRes + rightRes
 }

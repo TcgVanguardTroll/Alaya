@@ -8,15 +8,15 @@ type Type string
 
 type Token struct {
 	TokenType  Type
-	TokenValue byte
+	TokenValue string
 	Position   int
 }
 
 func (t Token) string() string {
-	return fmt.Sprintf("Token(%s,%b)", t.TokenType, t.TokenValue)
+	return fmt.Sprintf("Token(%s,%s)", t.TokenType, t.TokenValue)
 
 }
-func New(TokenType Type, TokenValue byte) Token {
+func New(TokenType Type, TokenValue string) Token {
 	var currentToken = Token{
 		TokenType,
 		TokenValue,
