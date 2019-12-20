@@ -10,7 +10,6 @@ type Token struct {
 	TokenType  Type
 	TokenValue byte
 	Position   int
-	Current    string
 }
 
 func (t Token) string() string {
@@ -22,7 +21,6 @@ func New(TokenType Type, TokenValue byte) Token {
 		TokenType,
 		TokenValue,
 		0,
-		nil,
 	}
 	return currentToken
 

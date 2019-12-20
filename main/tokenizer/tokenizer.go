@@ -18,13 +18,11 @@ type Tokenizer struct {
 	text         string
 	position     int
 	nextPosition int
-	currentToken byte
+	currentToken token.Token
 }
 
 func New(input string) *Tokenizer {
-	var newTokenizer = &Tokenizer{
-		text: input,
-	}
+	var newTokenizer = &Tokenizer{text: input}
 	newTokenizer.readChar()
 	return newTokenizer
 }
@@ -34,22 +32,21 @@ func (t Tokenizer) Error() error {
 	return err
 }
 
-func (t Tokenizer) readChar() {
+func (t *Tokenizer) readChar() {
 	if t.nextPosition >= len(t.text) {
-		t.currentToken = 0
+		t.currentToken.TokenValue = 0
 	} else {
-		t.currentToken = t.text[t.nextPosition]
+		t.currentToken.TokenValue = t.text[t.nextPosition]
 	}
 	t.position = t.nextPosition
 	t.nextPosition += 1
 }
 
-func (t Tokenizer) GetNextToken() token.Token {
-	var text = t.text
-	var currentByte = text[t.position]
+func (t *Tokenizer) GetNextToken() token.Token {
 	var currentToken token.Token
-	if t.position > len(text)-1 {
-		return token.New(token.EOF, 0)
+	var currentByte = t.currentToken.TokenValue
+	if currentByte == 0 {
+		currentToken = token.New(token.EOF, currentByte)
 	} else if unicode.IsDigit(rune(currentByte)) {
 		currentToken = token.New(token.INTEGER, currentByte)
 	} else if '+' == currentByte {
@@ -72,4 +69,25 @@ func (t Tokenizer) GetNextToken() token.Token {
 	t.readChar()
 	return currentToken
 
+}
+func (t *Tokenizer) consume(tokenToEat token.Type) {
+	if t.currentToken.TokenType == tokenToEat {
+		t.currentToken = t.GetNextToken()
+	}
+}
+
+func (t *Tokenizer) toExpression() byte {
+	t.currentToken = t.GetNextToken()
+
+	var left = t.currentToken
+	t.consume(token.INTEGER)
+
+	var _ = t.currentToken
+	t.consume(token.PLUS)
+
+	var right = t.currentToken
+	t.consume(token.INTEGER)
+
+	var res = left.TokenValue + right.TokenValue
+	return res
 }
