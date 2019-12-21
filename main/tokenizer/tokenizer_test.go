@@ -28,16 +28,6 @@ func TestTokenizer_GetNextToken(t *testing.T) {
 	}
 }
 
-func TestTokenizer_ErrorError(t *testing.T) {
-
-	input := `3+7`
-	var l = New(input)
-	tok := l.toExpression()
-	if tok != 10 {
-		t.Fatalf("tests[] - tokentype wrong")
-	}
-}
-
 func TestTokenizer_New(t *testing.T) {
 
 }

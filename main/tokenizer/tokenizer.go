@@ -4,6 +4,7 @@ import (
 	"Alaya/main/token"
 	"errors"
 	"strconv"
+	"strings"
 )
 
 /*
@@ -15,13 +16,13 @@ a sequence of lexemes.
 //The job of the tokenizer is to read tokens one at a time from
 //the input stream and pass the tokens to the parser.
 type Tokenizer struct {
-	text         string
-	position     int
-	nextPosition int
-	currentToken token.Token
+	text             string
+	position         int
+	nextPosition     int
+	currentCharacter byte
 }
 
-func isNumeric(s string) bool {
+func _(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
 }
@@ -39,62 +40,91 @@ func (t Tokenizer) Error() error {
 
 func (t *Tokenizer) readChar() {
 	if t.nextPosition >= len(t.text) {
-		t.currentToken.TokenValue = string(0)
+		t.currentCharacter = '0'
 	} else {
-		t.currentToken.TokenValue = string(t.text[t.nextPosition])
+		t.currentCharacter = t.text[t.nextPosition]
 	}
 	t.position = t.nextPosition
 	t.nextPosition += 1
 }
 
 func (t *Tokenizer) GetNextToken() token.Token {
-	var currentToken token.Token
-	var currentByte = t.currentToken.TokenValue
-	if currentByte == string(0) {
-		currentToken = token.New(token.EOF, currentByte)
-	} else if isNumeric(currentByte) {
-		currentToken = token.New(token.INTEGER, currentByte)
-	} else if "+" == currentByte {
-		currentToken = token.New(token.PLUS, currentByte)
-	} else if "=" == currentByte {
-		currentToken = token.New(token.AS, currentByte)
-	} else if "(" == currentByte {
-		currentToken = token.New(token.LPAREN, currentByte)
-	} else if ")" == currentByte {
-		currentToken = token.New(token.RPAREN, currentByte)
-	} else if ";" == currentByte {
-		currentToken = token.New(token.SEMICOLON, currentByte)
-	} else if "," == currentByte {
-		currentToken = token.New(token.COMMA, currentByte)
-	} else if "}" == currentByte {
-		currentToken = token.New(token.RBRACE, currentByte)
-	} else if "{" == currentByte {
-		currentToken = token.New(token.LBRACE, currentByte)
+	tokenVal := t.currentCharacter
+	for tokenVal != 0 {
+		switch tokenVal {
+		case ' ', '\n', '\t', '\r':
+			t.ignoreWhitespace()
+			continue
+		case '[':
+			t.consume()
+			return token.New(token.LBRACK, string(tokenVal))
+		case ']':
+			t.consume()
+			return token.New(token.RBRACK, string(tokenVal))
+
+		case ',':
+			t.consume()
+			return token.New(token.COMMA, string(tokenVal))
+		case '+':
+			t.consume()
+			return token.New(token.PLUS, string(tokenVal))
+		case '(':
+			t.consume()
+			return token.New(token.LPAREN, string(tokenVal))
+		case ')':
+			t.consume()
+			return token.New(token.RPAREN, string(tokenVal))
+		case '{':
+			t.consume()
+			return token.New(token.LBRACE, string(tokenVal))
+		case '}':
+			t.consume()
+			return token.New(token.RBRACE, string(tokenVal))
+		case ';':
+			t.consume()
+			return token.New(token.SEMICOLON, string(tokenVal))
+		default:
+			if t.isLetter() {
+				t.consume()
+				return t.Char()
+			} else {
+				t.consume()
+				return token.New(token.AS, string(tokenVal))
+			}
+
+		}
+
 	}
-	t.readChar()
-	return currentToken
 
+	return token.New(token.EOF, "0")
 }
-func (t Tokenizer) consume(tokenToEat token.Type) {
-	if t.currentToken.TokenType == tokenToEat {
-		t.currentToken = t.GetNextToken()
+
+func (t *Tokenizer) ignoreWhitespace() {
+	for t.currentCharacter == ' ' || t.currentCharacter == '\t' ||
+		t.currentCharacter == '\n' || t.currentCharacter == '\r' {
+		t.consume()
 	}
 }
 
-func (t Tokenizer) toExpression() int {
-	t.currentToken = t.GetNextToken()
+func (t *Tokenizer) Char() token.Token {
+	var sb strings.Builder
+	for t.isLetter() {
+		sb.WriteByte(t.currentCharacter)
+		t.consume()
+	}
+	return token.New(token.NAME, sb.String())
+}
 
-	var left = t.currentToken
-	t.consume(token.INTEGER)
+func (t *Tokenizer) isLetter() bool {
+	return t.currentCharacter >= 'a' && t.currentCharacter <= 'z' ||
+		t.currentCharacter >= 'A' && t.currentCharacter <= 'A'
+}
 
-	_ = t.currentToken
-	t.readChar()
-
-	var right = t.currentToken
-	t.readChar()
-
-	var rightRes, _ = strconv.Atoi(right.TokenValue)
-	var leftRes, _ = strconv.Atoi(left.TokenValue)
-
-	return leftRes + rightRes
+func (t *Tokenizer) consume() {
+	t.position += 1
+	if t.position >= len(t.text) {
+		t.currentCharacter = 0
+	} else {
+		t.currentCharacter = t.text[t.position]
+	}
 }

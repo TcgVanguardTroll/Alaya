@@ -9,7 +9,6 @@ type Type string
 type Token struct {
 	TokenType  Type
 	TokenValue string
-	Position   int
 }
 
 func (t Token) string() string {
@@ -20,7 +19,6 @@ func New(TokenType Type, TokenValue string) Token {
 	var currentToken = Token{
 		TokenType,
 		TokenValue,
-		0,
 	}
 	return currentToken
 
@@ -34,11 +32,11 @@ func New(TokenType Type, TokenValue string) Token {
 const (
 	ILLEGAL = "ILLEGAL"
 	INTEGER = "INTEGER"
-	EOF     = "EOF"
+	EOF     = "0"
 
 	//	Keywords
 
-	CAST    = "CAST"
+	NAME    = "NAME"
 	COMMAND = "COMMAND"
 
 	//	Operators
@@ -52,4 +50,6 @@ const (
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
+	LBRACK    = "["
+	RBRACK    = "]"
 )
