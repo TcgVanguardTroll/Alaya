@@ -18,7 +18,6 @@ a sequence of lexemes.
 type Tokenizer struct {
 	text             string
 	position         int
-	nextPosition     int
 	currentCharacter byte
 }
 
@@ -28,8 +27,8 @@ func _(s string) bool {
 }
 
 func New(input string) *Tokenizer {
-	var newTokenizer = &Tokenizer{text: input}
-	newTokenizer.readChar()
+	var newTokenizer = &Tokenizer{text: input, position: 0}
+	newTokenizer.currentCharacter = newTokenizer.text[newTokenizer.position]
 	return newTokenizer
 }
 
@@ -38,57 +37,47 @@ func (t Tokenizer) Error() error {
 	return err
 }
 
-func (t *Tokenizer) readChar() {
-	if t.nextPosition >= len(t.text) {
-		t.currentCharacter = '0'
-	} else {
-		t.currentCharacter = t.text[t.nextPosition]
-	}
-	t.position = t.nextPosition
-	t.nextPosition += 1
-}
-
 func (t *Tokenizer) GetNextToken() token.Token {
 	tokenVal := t.currentCharacter
 	for tokenVal != 0 {
 		switch tokenVal {
 		case ' ', '\n', '\t', '\r':
-			t.ignoreWhitespace()
+			t.IgnoreWhitespace()
 			continue
 		case '[':
-			t.consume()
+			t.Advance()
 			return token.New(token.LBRACK, string(tokenVal))
 		case ']':
-			t.consume()
+			t.Advance()
 			return token.New(token.RBRACK, string(tokenVal))
 
 		case ',':
-			t.consume()
+			t.Advance()
 			return token.New(token.COMMA, string(tokenVal))
 		case '+':
-			t.consume()
+			t.Advance()
 			return token.New(token.PLUS, string(tokenVal))
 		case '(':
-			t.consume()
+			t.Advance()
 			return token.New(token.LPAREN, string(tokenVal))
 		case ')':
-			t.consume()
+			t.Advance()
 			return token.New(token.RPAREN, string(tokenVal))
 		case '{':
-			t.consume()
+			t.Advance()
 			return token.New(token.LBRACE, string(tokenVal))
 		case '}':
-			t.consume()
+			t.Advance()
 			return token.New(token.RBRACE, string(tokenVal))
 		case ';':
-			t.consume()
+			t.Advance()
 			return token.New(token.SEMICOLON, string(tokenVal))
 		default:
 			if t.isLetter() {
-				t.consume()
+				t.Advance()
 				return t.Char()
 			} else {
-				t.consume()
+				t.Advance()
 				return token.New(token.AS, string(tokenVal))
 			}
 
@@ -99,28 +88,32 @@ func (t *Tokenizer) GetNextToken() token.Token {
 	return token.New(token.EOF, "0")
 }
 
-func (t *Tokenizer) ignoreWhitespace() {
+func (t *Tokenizer) IgnoreWhitespace() {
 	for t.currentCharacter == ' ' || t.currentCharacter == '\t' ||
 		t.currentCharacter == '\n' || t.currentCharacter == '\r' {
-		t.consume()
+		t.Advance()
 	}
 }
+
+/*
+Function that returns a token for each character.
+*/
 
 func (t *Tokenizer) Char() token.Token {
 	var sb strings.Builder
 	for t.isLetter() {
 		sb.WriteByte(t.currentCharacter)
-		t.consume()
+		t.Advance()
 	}
 	return token.New(token.NAME, sb.String())
 }
 
 func (t *Tokenizer) isLetter() bool {
 	return t.currentCharacter >= 'a' && t.currentCharacter <= 'z' ||
-		t.currentCharacter >= 'A' && t.currentCharacter <= 'A'
+		t.currentCharacter >= 'A' && t.currentCharacter <= 'Z'
 }
 
-func (t *Tokenizer) consume() {
+func (t *Tokenizer) Advance() {
 	t.position += 1
 	if t.position >= len(t.text) {
 		t.currentCharacter = 0

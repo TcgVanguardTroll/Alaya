@@ -28,6 +28,10 @@ func TestTokenizer_GetNextToken(t *testing.T) {
 	}
 }
 
-func TestTokenizer_New(t *testing.T) {
-
+func TestTokenizer_Char(t *testing.T) {
+	input := `Jordan`
+	tokeinzer := New(input)
+	if tokeinzer.Char() != token2.New(token2.NAME, "Jordan") {
+		t.Fatal()
+	}
 }
