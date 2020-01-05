@@ -34,14 +34,21 @@ const (
 	INTEGER = "INTEGER"
 	EOF     = "0"
 
+	// Operators
+
 	//	Keywords
 
 	NAME    = "NAME"
 	COMMAND = "COMMAND"
 
 	//	Operators
-	AS   = "="
-	PLUS = "+"
+	AS       = "="
+	PLUS     = "+"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+	LT       = "<"
+	GT       = ">"
 
 	//	Delimiters
 	COMMA     = ","

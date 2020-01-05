@@ -44,6 +44,24 @@ func (t *Tokenizer) GetNextToken() token.Token {
 		case ' ', '\n', '\t', '\r':
 			t.IgnoreWhitespace()
 			continue
+		case '<':
+			t.Advance()
+			return token.New(token.LT, string(tokenVal))
+		case '>':
+			t.Advance()
+			return token.New(token.GT, string(tokenVal))
+		case '!':
+			t.Advance()
+			return token.New(token.BANG, string(tokenVal))
+		case '=':
+			t.Advance()
+			return token.New(token.AS, string(tokenVal))
+		case '*':
+			t.Advance()
+			return token.New(token.ASTERISK, string(tokenVal))
+		case '/':
+			t.Advance()
+			return token.New(token.SLASH, string(tokenVal))
 		case '[':
 			t.Advance()
 			return token.New(token.LBRACK, string(tokenVal))
@@ -76,9 +94,12 @@ func (t *Tokenizer) GetNextToken() token.Token {
 			if t.isLetter() {
 				t.Advance()
 				return t.Char()
+			} else if t.isDigit() {
+				t.Advance()
+				return token.New(token.INTEGER, string(tokenVal))
 			} else {
 				t.Advance()
-				return token.New(token.AS, string(tokenVal))
+				return token.New(token.ILLEGAL, string(tokenVal))
 			}
 
 		}
@@ -112,6 +133,41 @@ func (t *Tokenizer) isLetter() bool {
 	return t.currentCharacter >= 'a' && t.currentCharacter <= 'z' ||
 		t.currentCharacter >= 'A' && t.currentCharacter <= 'Z'
 }
+func (t *Tokenizer) isDigit() bool {
+	return '0' <= t.currentCharacter && t.currentCharacter <= '9'
+}
+
+/*
+Reads through current tokens Text and returns
+the Number numerical value as a String.
+*/
+//func (t *Tokenizer) readNumber() string {
+//	// Determines whether the read number will be a
+//	// Whole number or a float !
+//	isDouble := false
+//
+//	for t.currentCharacter != '0' {
+//		a:= func() bool{
+//			if t.currentCharacter == '.'{
+//				if isDouble {
+//					return  false
+//				}
+//				isDouble = true
+//				return true
+//			}
+//			return t.isDigit()
+//		}
+//	}
+//
+//	return token.New(token.INTEGER,a)
+//}
+
+//
+//func (t *Tokenizer) readWhile() {
+//	isDouble := false
+//	number :=
+//
+//}
 
 func (t *Tokenizer) Advance() {
 	t.position += 1
