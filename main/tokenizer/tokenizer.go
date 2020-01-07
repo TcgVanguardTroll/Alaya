@@ -121,8 +121,8 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 				value := t.readIdentifier()
 				tokType := t.lookupIdentifier(value)
 				return alaya_token.Token{
-					tokType,
-					value,
+					TokenType:  tokType,
+					TokenValue: value,
 				}
 			} else if t.isDigit() {
 				return alaya_token.Token{
