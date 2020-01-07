@@ -1,21 +1,23 @@
 package parser
 
 import (
-	"Alaya/main/token"
+	"Alaya/main/alaya_token"
 	"Alaya/main/tokenizer"
 )
 
 type Parser struct {
-	Tokenizer    tokenizer.Tokenizer
-	CurrentToken token.Token
+	Tokenizer tokenizer.Tokenizer
+	//SymTable
+	CurrentToken alaya_token.Token
+	//ICode
 }
 
-func (p *Parser) match(tokenType token.Type) (string, error) {
-	if p.CurrentToken.TokenType != tokenType {
+func (p *Parser) isMatch(tokenType alaya_token.Type) bool {
+	if p.CurrentToken.TokenType == tokenType {
 		p.CurrentToken = p.Tokenizer.GetNextToken()
-		return "Was A Match !", nil
+		return true
 
 	} else {
-		return "Wrong Type of Token !", p.Tokenizer.Error()
+		return false
 	}
 }

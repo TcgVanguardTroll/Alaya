@@ -1,7 +1,7 @@
 package tokenizer
 
 import (
-	"Alaya/main/token"
+	"Alaya/main/alaya_token"
 	"errors"
 	"strconv"
 	"strings"
@@ -26,6 +26,13 @@ func _(s string) bool {
 	return err == nil
 }
 
+func (t *Tokenizer) peek() byte {
+	if t.position+1 >= len(t.text) {
+		return 0
+	}
+	return t.text[t.position+1]
+}
+
 func New(input string) *Tokenizer {
 	var newTokenizer = &Tokenizer{text: input, position: 0}
 	newTokenizer.currentCharacter = newTokenizer.text[newTokenizer.position]
@@ -37,97 +44,136 @@ func (t Tokenizer) Error() error {
 	return err
 }
 
-func (t *Tokenizer) GetNextToken() token.Token {
+func (t *Tokenizer) GetNextToken() alaya_token.Token {
 	tokenVal := t.currentCharacter
 	for tokenVal != 0 {
+		t.IgnoreWhitespace()
+		tokenVal = t.currentCharacter
 		switch tokenVal {
-		case ' ', '\n', '\t', '\r':
-			t.IgnoreWhitespace()
-			continue
 		case '<':
 			t.Advance()
-			return token.New(token.LT, string(tokenVal))
+			return alaya_token.New(alaya_token.LT, tokenVal)
+		case '=':
+			if t.peek() == '=' {
+				c := tokenVal
+				t.Advance()
+				t.Advance()
+				return alaya_token.New(alaya_token.ASCOMPARE, (c)+(tokenVal))
+			}
+			t.Advance()
+			return alaya_token.New(alaya_token.AS, tokenVal)
 		case '>':
 			t.Advance()
-			return token.New(token.GT, string(tokenVal))
+			return alaya_token.New(alaya_token.GT, tokenVal)
 		case '!':
+			if t.peek() == '=' {
+				c := t.currentCharacter
+				t.Advance()
+				v := t.currentCharacter
+				t.Advance()
+				return alaya_token.Token{
+					TokenType:  alaya_token.NotAs,
+					TokenValue: string(c) + string(v),
+				}
+			}
 			t.Advance()
-			return token.New(token.BANG, string(tokenVal))
-		case '=':
-			t.Advance()
-			return token.New(token.AS, string(tokenVal))
+			return alaya_token.New(alaya_token.BANG, tokenVal)
+
 		case '*':
 			t.Advance()
-			return token.New(token.ASTERISK, string(tokenVal))
+			return alaya_token.New(alaya_token.ASTERISK, tokenVal)
 		case '/':
 			t.Advance()
-			return token.New(token.SLASH, string(tokenVal))
+			return alaya_token.New(alaya_token.SLASH, tokenVal)
 		case '[':
 			t.Advance()
-			return token.New(token.LBRACK, string(tokenVal))
+			return alaya_token.New(alaya_token.LBRACK, tokenVal)
 		case ']':
 			t.Advance()
-			return token.New(token.RBRACK, string(tokenVal))
+			return alaya_token.New(alaya_token.RBRACK, tokenVal)
 
 		case ',':
 			t.Advance()
-			return token.New(token.COMMA, string(tokenVal))
+			return alaya_token.New(alaya_token.COMMA, tokenVal)
 		case '+':
 			t.Advance()
-			return token.New(token.PLUS, string(tokenVal))
+			return alaya_token.New(alaya_token.PLUS, tokenVal)
+		case '-':
+			t.Advance()
+			return alaya_token.New(alaya_token.MINUS, tokenVal)
 		case '(':
 			t.Advance()
-			return token.New(token.LPAREN, string(tokenVal))
+			return alaya_token.New(alaya_token.LPAREN, tokenVal)
 		case ')':
 			t.Advance()
-			return token.New(token.RPAREN, string(tokenVal))
+			return alaya_token.New(alaya_token.RPAREN, tokenVal)
 		case '{':
 			t.Advance()
-			return token.New(token.LBRACE, string(tokenVal))
+			return alaya_token.New(alaya_token.LBRACE, tokenVal)
 		case '}':
 			t.Advance()
-			return token.New(token.RBRACE, string(tokenVal))
+			return alaya_token.New(alaya_token.RBRACE, tokenVal)
 		case ';':
 			t.Advance()
-			return token.New(token.SEMICOLON, string(tokenVal))
+			return alaya_token.New(alaya_token.SEMICOLON, tokenVal)
 		default:
 			if t.isLetter() {
-				t.Advance()
-				return t.Char()
+				value := t.readIdentifier()
+				tokType := t.lookupIdentifier(value)
+				return alaya_token.Token{
+					tokType,
+					value,
+				}
 			} else if t.isDigit() {
-				t.Advance()
-				return token.New(token.INTEGER, string(tokenVal))
+				return alaya_token.Token{
+					TokenType:  alaya_token.INTEGER,
+					TokenValue: t.readNumber(),
+				}
 			} else {
 				t.Advance()
-				return token.New(token.ILLEGAL, string(tokenVal))
+				return alaya_token.New(alaya_token.ILLEGAL, tokenVal)
 			}
 
 		}
 
 	}
 
-	return token.New(token.EOF, "0")
+	return alaya_token.New(alaya_token.EOF, 0)
 }
 
 func (t *Tokenizer) IgnoreWhitespace() {
-	for t.currentCharacter == ' ' || t.currentCharacter == '\t' ||
-		t.currentCharacter == '\n' || t.currentCharacter == '\r' {
+	for t.currentCharacter == ' ' || t.currentCharacter == '\t' || t.currentCharacter == '\n' || t.currentCharacter == '\r' {
 		t.Advance()
 	}
 }
 
 /*
-Function that returns a token for each character.
+Function that extracts the Tokenizer's current token
+and as long as it as well as the following characters
+are letters returns a string representing it.
+
 */
 
-func (t *Tokenizer) Char() token.Token {
+func (t *Tokenizer) readIdentifier() string {
 	var sb strings.Builder
 	for t.isLetter() {
 		sb.WriteByte(t.currentCharacter)
 		t.Advance()
 	}
-	return token.New(token.NAME, sb.String())
+	return sb.String()
 }
+
+func (t *Tokenizer) readNumber() string {
+	var sb strings.Builder
+	for t.isDigit() {
+		sb.WriteByte(t.currentCharacter)
+		t.Advance()
+	}
+	return sb.String()
+}
+
+// Checks if the tokenizer's current character is a Letter and
+// if so returns True else False.
 
 func (t *Tokenizer) isLetter() bool {
 	return t.currentCharacter >= 'a' && t.currentCharacter <= 'z' ||
@@ -136,39 +182,27 @@ func (t *Tokenizer) isLetter() bool {
 func (t *Tokenizer) isDigit() bool {
 	return '0' <= t.currentCharacter && t.currentCharacter <= '9'
 }
+func (t *Tokenizer) isPunc() bool {
+	return strings.Contains(",;(){}[]", string(t.currentCharacter))
+}
+func (t *Tokenizer) isKeyword() bool {
+	if _, ok := alaya_token.Keywords[string(t.currentCharacter)]; ok {
+		return true
+	}
+	return false
+}
+func (t *Tokenizer) lookupIdentifier(ident string) alaya_token.Type {
+	if tok, ok := alaya_token.Keywords[ident]; ok {
+		return tok
+	}
+	return alaya_token.IDENT
+}
 
-/*
-Reads through current tokens Text and returns
-the Number numerical value as a String.
-*/
-//func (t *Tokenizer) readNumber() string {
-//	// Determines whether the read number will be a
-//	// Whole number or a float !
-//	isDouble := false
-//
-//	for t.currentCharacter != '0' {
-//		a:= func() bool{
-//			if t.currentCharacter == '.'{
-//				if isDouble {
-//					return  false
-//				}
-//				isDouble = true
-//				return true
-//			}
-//			return t.isDigit()
-//		}
-//	}
-//
-//	return token.New(token.INTEGER,a)
-//}
-
-//
-//func (t *Tokenizer) readWhile() {
-//	isDouble := false
-//	number :=
-//
-//}
-
+// Increments the tokenizer's current position by one
+// and checks if the position is at the end, if so then
+// the tokenizer's current character is EOF Value.Else
+// The current token character is the character at the
+// advanced position.
 func (t *Tokenizer) Advance() {
 	t.position += 1
 	if t.position >= len(t.text) {
