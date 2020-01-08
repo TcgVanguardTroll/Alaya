@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Alaya/main/repl"
+	"Alaya/main/alaya_repl"
 	"fmt"
 	"os"
 	"os/user"
@@ -13,5 +13,5 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("Hello %s! Welcome to the Alaya Programming Language!\n", current.Username)
-	repl.Start(os.Stdin, os.Stdout)
+	alaya_repl.Start(os.Stdin, os.Stdout)
 }

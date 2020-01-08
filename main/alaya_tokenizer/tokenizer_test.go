@@ -1,4 +1,4 @@
-package tokenizer
+package alaya_tokenizer
 
 import (
 	_ "Alaya/main/alaya_token"

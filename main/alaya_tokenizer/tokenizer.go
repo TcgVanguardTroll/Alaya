@@ -1,4 +1,4 @@
-package tokenizer
+package alaya_tokenizer
 
 import (
 	"Alaya/main/alaya_token"
@@ -8,13 +8,13 @@ import (
 )
 
 /*
-The lexer, also called lexical analyzer or tokenizer,
+The lexer, also called lexical analyzer or alaya_tokenizer,
 is a program that breaks down the input source code into
 a sequence of lexemes.
 */
 
-//The job of the tokenizer is to read tokens one at a time from
-//the input stream and pass the tokens to the parser.
+//The job of the alaya_tokenizer is to read tokens one at a time from
+//the input stream and pass the tokens to the alaya_parser.
 type Tokenizer struct {
 	text             string
 	position         int
@@ -172,7 +172,7 @@ func (t *Tokenizer) readNumber() string {
 	return sb.String()
 }
 
-// Checks if the tokenizer's current character is a Letter and
+// Checks if the alaya_tokenizer's current character is a Letter and
 // if so returns True else False.
 
 func (t *Tokenizer) isLetter() bool {
@@ -198,9 +198,9 @@ func (t *Tokenizer) lookupIdentifier(ident string) alaya_token.Type {
 	return alaya_token.IDENT
 }
 
-// Increments the tokenizer's current position by one
+// Increments the alaya_tokenizer's current position by one
 // and checks if the position is at the end, if so then
-// the tokenizer's current character is EOF Value.Else
+// the alaya_tokenizer's current character is EOF Value.Else
 // The current token character is the character at the
 // advanced position.
 func (t *Tokenizer) Advance() {
