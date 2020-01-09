@@ -3,28 +3,30 @@ package alaya_tokenizer
 import (
 	"Alaya/main/alaya_token"
 	"errors"
-	"strconv"
 	"strings"
 )
 
 /*
-The lexer, also called lexical analyzer or alaya_tokenizer,
-is a program that breaks down the input source code into
-a sequence of lexemes.
+	The lexer, also called lexical analyzer or alaya_tokenizer,
+	is a program that breaks down the input source code into
+	a sequence of lexemes.
 */
 
-//The job of the alaya_tokenizer is to read tokens one at a time from
-//the input stream and pass the tokens to the alaya_parser.
+/*
+	The job of the alaya_tokenizer is to read tokens one at a time from
+	the input stream and pass the tokens to the alaya_parser.
+*/
 type Tokenizer struct {
 	text             string
 	position         int
 	currentCharacter byte
 }
 
-func _(s string) bool {
-	_, err := strconv.ParseFloat(s, 64)
-	return err == nil
-}
+/*
+	Checks the next Character within the Tokenizer without
+	incrementing the current position. If at the last position
+	returns the EOF value of 0.
+*/
 
 func (t *Tokenizer) peek() byte {
 	if t.position+1 >= len(t.text) {
@@ -32,6 +34,26 @@ func (t *Tokenizer) peek() byte {
 	}
 	return t.text[t.position+1]
 }
+
+/*
+	Decrements the tokenizer's position by the input distance
+	lowest position possible is 0.
+*/
+
+func (t *Tokenizer) backup(distance int) {
+
+	if (t.position - distance) < 0 {
+		t.position = 0
+	}
+	t.position -= distance
+}
+
+/*
+	Returns a New instance of a Tokenizer.
+	Input takes the string that will be initialized
+	and the position will be set to 0 alongside it's
+	initial character.
+*/
 
 func New(input string) *Tokenizer {
 	var newTokenizer = &Tokenizer{text: input, position: 0}
@@ -78,7 +100,6 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 			}
 			t.Advance()
 			return alaya_token.New(alaya_token.BANG, tokenVal)
-
 		case '*':
 			t.Advance()
 			return alaya_token.New(alaya_token.ASTERISK, tokenVal)
@@ -91,7 +112,6 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 		case ']':
 			t.Advance()
 			return alaya_token.New(alaya_token.RBRACK, tokenVal)
-
 		case ',':
 			t.Advance()
 			return alaya_token.New(alaya_token.COMMA, tokenVal)
@@ -141,6 +161,11 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 	return alaya_token.New(alaya_token.EOF, 0)
 }
 
+/*
+	Ignores any whitespace from within the tokenizer's
+	text property by proceeding as usual by going to the
+	next position.
+*/
 func (t *Tokenizer) IgnoreWhitespace() {
 	for t.currentCharacter == ' ' || t.currentCharacter == '\t' || t.currentCharacter == '\n' || t.currentCharacter == '\r' {
 		t.Advance()
@@ -148,12 +173,10 @@ func (t *Tokenizer) IgnoreWhitespace() {
 }
 
 /*
-Function that extracts the Tokenizer's current token
-and as long as it as well as the following characters
-are letters returns a string representing it.
-
+	Function that extracts the Tokenizer's current token
+	and as long as it as well as the following characters
+	are letters returns a string representing it.
 */
-
 func (t *Tokenizer) readIdentifier() string {
 	var sb strings.Builder
 	for t.isLetter() {
@@ -163,6 +186,12 @@ func (t *Tokenizer) readIdentifier() string {
 	return sb.String()
 }
 
+/*
+	Builds a numerical representation of a String
+	containing digits "0-9" and then returns that
+	same representation while simultaneously advancing
+	the tokenizer's position.
+*/
 func (t *Tokenizer) readNumber() string {
 	var sb strings.Builder
 	for t.isDigit() {
@@ -172,8 +201,10 @@ func (t *Tokenizer) readNumber() string {
 	return sb.String()
 }
 
-// Checks if the alaya_tokenizer's current character is a Letter and
-// if so returns True else False.
+/*
+	Checks if the alaya_tokenizer's current character is a Letter and
+	if so returns True else False.
+*/
 
 func (t *Tokenizer) isLetter() bool {
 	return t.currentCharacter >= 'a' && t.currentCharacter <= 'z' ||
@@ -198,11 +229,12 @@ func (t *Tokenizer) lookupIdentifier(ident string) alaya_token.Type {
 	return alaya_token.IDENT
 }
 
-// Increments the alaya_tokenizer's current position by one
-// and checks if the position is at the end, if so then
-// the alaya_tokenizer's current character is EOF Value.Else
-// The current token character is the character at the
-// advanced position.
+/*	Increments the alaya_tokenizer's current position by one
+	and checks if the position is at the end, if so then
+	the alaya_tokenizer's current character is EOF Value
+	Else The current token character is the character at
+	the advanced position.
+*/
 func (t *Tokenizer) Advance() {
 	t.position += 1
 	if t.position >= len(t.text) {

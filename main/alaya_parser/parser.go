@@ -1,9 +1,9 @@
 package alaya_parser
 
 import (
+	. "Alaya/main/alaya_ast"
 	"Alaya/main/alaya_token"
 	"Alaya/main/alaya_tokenizer"
-	"strconv"
 )
 
 type (
@@ -37,18 +37,17 @@ func containsOperator(inputType alaya_token.Type, typeArr []alaya_token.Type) bo
 //	factor : INTEGER
 //
 //
-func (p *Parser) factor() (int, error) {
-	var res int
+func (p *Parser) factor() AST {
 	token := p.CurrentToken
 	if token.TokenType == alaya_token.INTEGER {
 		p.isMatch(alaya_token.INTEGER)
-		res, _ = strconv.Atoi(token.TokenValue)
-		return res, nil
+		node := NewNumOp(token, token.TokenValue)
+		return node
 	} else {
 		p.isMatch(alaya_token.LPAREN)
-		var res = p.Expr()
+		node := p.Expr()
 		p.isMatch(alaya_token.RPAREN)
-		return res, nil
+		return node
 	}
 }
 
@@ -61,46 +60,40 @@ func (p *Parser) isMatch(tokenType alaya_token.Type) {
 	}
 }
 
-func (p *Parser) term() int {
-	var res, _ = p.factor()
-
+func (p *Parser) term() AST {
+	var node = p.factor()
 	for containsOperator(p.CurrentToken.TokenType, []alaya_token.Type{alaya_token.ASTERISK, alaya_token.SLASH}) {
 		tok := p.CurrentToken
 		if tok.TokenType == alaya_token.ASTERISK {
 			p.isMatch(alaya_token.ASTERISK)
-			match, err := p.factor()
-			if err == nil {
-				res = res * match
-			}
 		} else {
 			tok := p.CurrentToken
 			if tok.TokenType == alaya_token.SLASH {
 				p.isMatch(alaya_token.SLASH)
-				match, err := p.factor()
-				if err == nil {
-					res = res / match
-				}
 			}
 		}
+		node = NewBinOp(node, tok, p.factor())
 	}
-	return res
+	return node
 }
 
 //TODO(Implement the ability to skip whitespace in expression 3 3 + 3 should equal 36)
 
-func (p *Parser) Expr() int {
-	var result = p.term()
+func (p *Parser) Expr() AST {
+	var node AST
+	node = p.term()
 	for containsOperator(p.CurrentToken.TokenType, []alaya_token.Type{alaya_token.MINUS, alaya_token.PLUS}) {
 		tok := p.CurrentToken
 		if tok.TokenType == alaya_token.PLUS {
 			p.isMatch(alaya_token.PLUS)
-			match := p.term()
-			result = result + match
 		} else {
 			p.isMatch(alaya_token.MINUS)
-			match := p.term()
-			result = result - match
 		}
+		node = NewBinOp(node, tok, p.term())
 	}
-	return result
+	return node
+}
+
+func (p *Parser) parse() {
+
 }

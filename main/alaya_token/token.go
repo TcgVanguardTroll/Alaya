@@ -36,7 +36,7 @@ const (
 	SLASH     = "/"
 	LT        = "<"
 	GT        = ">"
-	//	Puncuation
+	//	Punctuation
 	COMMA     = ","
 	SEMICOLON = ";"
 	LPAREN    = "("
