@@ -5,54 +5,64 @@ import (
 	"strconv"
 )
 
-type AST interface {
-	AddValue(val string) int
-}
+type (
+	AST interface {
+		AddValue(val string) int
+		GetValue(ast AST) *AST
+	}
+)
 
 type BinOp struct {
-	AST
 	Left  AST
 	Op    token2.Token
 	Right AST
 }
 
 type NumOp struct {
-	AST
 	Token token2.Token
 	Value int
 }
 
-func NewBinOp(left AST, op token2.Token, right AST) AST {
-	b := BinOp{}
-	return &BinOp{
+func NewBinOp(left AST, op token2.Token, right AST) *AST {
+	var b AST
+	b = BinOp{
 		Left:  left,
-		Op:    b.AddOp(op),
+		Op:    op,
 		Right: right,
 	}
+	return &b
 }
 
-func (b *BinOp) AddValue(rightVal string) int {
+func NewNumOp(left token2.Token) *AST {
+	var n AST
+	val, _ := strconv.Atoi(left.TokenValue)
+	n = NumOp{
+		Token: left,
+		Value: val,
+	}
+	return &n
+}
+
+func (b BinOp) AddValue(rightVal string) int {
 	right, _ := strconv.Atoi(rightVal)
 	return right
 }
-
-func (b *BinOp) AddOp(op token2.Token) token2.Token {
+func (b BinOp) AddOp(op token2.Token) token2.Token {
 	return op
 }
 
-func NewNumOp(left token2.Token, right string) AST {
-	n := NumOp{}
-	return &NumOp{
-		Token: n.AddToken(left),
-		Value: n.AddValue(right),
-	}
+func (b BinOp) GetValue(ast AST) *AST {
+	return &(ast)
 }
 
-func (n *NumOp) AddToken(leftVal token2.Token) token2.Token {
+func (n NumOp) AddToken(leftVal token2.Token) token2.Token {
 	return leftVal
 }
 
-func (n *NumOp) AddValue(rightVal string) int {
+func (n NumOp) AddValue(rightVal string) int {
 	right, _ := strconv.Atoi(rightVal)
 	return right
+}
+func (n NumOp) GetValue(ast AST) *AST {
+	return &(ast)
 }

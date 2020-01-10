@@ -24,6 +24,10 @@ var (
 	}
 )
 
+func NewParser(tokenizer *alaya_tokenizer.Tokenizer) *Parser {
+	return &Parser{Tokenizer: tokenizer}
+}
+
 func containsOperator(inputType alaya_token.Type, typeArr []alaya_token.Type) bool {
 	for _, b := range typeArr {
 		if b == inputType {
@@ -41,8 +45,8 @@ func (p *Parser) factor() AST {
 	token := p.CurrentToken
 	if token.TokenType == alaya_token.INTEGER {
 		p.isMatch(alaya_token.INTEGER)
-		node := NewNumOp(token, token.TokenValue)
-		return node
+		node := NewNumOp(token)
+		return *node
 	} else {
 		p.isMatch(alaya_token.LPAREN)
 		node := p.Expr()
@@ -72,7 +76,7 @@ func (p *Parser) term() AST {
 				p.isMatch(alaya_token.SLASH)
 			}
 		}
-		node = NewBinOp(node, tok, p.factor())
+		node = *NewBinOp(node, tok, p.factor())
 	}
 	return node
 }
@@ -89,7 +93,7 @@ func (p *Parser) Expr() AST {
 		} else {
 			p.isMatch(alaya_token.MINUS)
 		}
-		node = NewBinOp(node, tok, p.term())
+		node = *NewBinOp(node, tok, p.term())
 	}
 	return node
 }
