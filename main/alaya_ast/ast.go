@@ -1,68 +1,47 @@
 package alaya_ast
 
-import (
-	token2 "Alaya/main/alaya_token"
-	"strconv"
-)
+import token2 "Alaya/main/alaya_token"
 
-type (
-	AST interface {
-		AddValue(val string) int
-		GetValue(ast AST) *AST
-	}
-)
-
-type BinOp struct {
-	Left  AST
-	Op    token2.Token
-	Right AST
+type Node interface {
+	TokenType() string
 }
 
-type NumOp struct {
+type Statement interface {
+	Node
+	StatementNode()
+}
+
+type AsStatement struct {
 	Token token2.Token
-	Value int
+	Name  *Identifier
+	Value Expression
 }
 
-func NewBinOp(left AST, op token2.Token, right AST) *AST {
-	var b AST
-	b = BinOp{
-		Left:  left,
-		Op:    op,
-		Right: right,
+func (as *AsStatement) statementNode() {}
+
+func (as *AsStatement) TokenValue() string { return as.Token.TokenValue }
+
+type Expression interface {
+	Node
+	ExpressionNode()
+}
+
+type Identifier struct {
+	Token token2.Token
+	Value string
+}
+
+func (i *Identifier) expressionNode()    {}
+func (i *Identifier) TokenValue() string { return i.Token.TokenValue }
+
+type Root struct {
+	Statements []Statement
+}
+
+func (r *Root) TokenValue() string {
+	if len(r.Statements) > 0 {
+		return r.Statements[0].TokenType()
+	} else {
+		return ""
 	}
-	return &b
-}
-
-func NewNumOp(left token2.Token) *AST {
-	var n AST
-	val, _ := strconv.Atoi(left.TokenValue)
-	n = NumOp{
-		Token: left,
-		Value: val,
-	}
-	return &n
-}
-
-func (b BinOp) AddValue(rightVal string) int {
-	right, _ := strconv.Atoi(rightVal)
-	return right
-}
-func (b BinOp) AddOp(op token2.Token) token2.Token {
-	return op
-}
-
-func (b BinOp) GetValue(ast AST) *AST {
-	return &(ast)
-}
-
-func (n NumOp) AddToken(leftVal token2.Token) token2.Token {
-	return leftVal
-}
-
-func (n NumOp) AddValue(rightVal string) int {
-	right, _ := strconv.Atoi(rightVal)
-	return right
-}
-func (n NumOp) GetValue(ast AST) *AST {
-	return &(ast)
 }
