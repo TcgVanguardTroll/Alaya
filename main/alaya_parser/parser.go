@@ -1,8 +1,10 @@
 package alaya_parser
 
 import (
-	"Alaya/main/alaya_token"
-	"Alaya/main/alaya_tokenizer"
+	"strconv"
+
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_token"
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_tokenizer"
 )
 
 type (

@@ -39,6 +39,7 @@ const (
 	//	Punctuation
 	COMMA     = ","
 	SEMICOLON = ";"
+	COLON     = ":"
 	LPAREN    = "("
 	RPAREN    = ")"
 	LBRACE    = "{"
@@ -62,10 +63,19 @@ func (t Token) string() string {
 	return fmt.Sprintf("Token(%s,%s)", t.TokenType, t.TokenValue)
 
 }
-func New(TokenType Type, TokenValue byte) Token {
+func New(TokenType Type, TokenValue interface{}) Token {
+	var value string
+	switch v := TokenValue.(type) {
+	case byte:
+		value = string(v)
+	case string:
+		value = v
+	default:
+		value = fmt.Sprintf("%v", v)
+	}
 
 	return Token{
 		TokenType:  TokenType,
-		TokenValue: string(TokenValue),
+		TokenValue: value,
 	}
 }
