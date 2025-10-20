@@ -1,9 +1,9 @@
 package alaya_tokenizer
 
 import (
-	_ "Alaya/main/alaya_token"
-	token2 "Alaya/main/alaya_token"
 	"testing"
+
+	token2 "github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 )
 
 func TestTokenizer_GetNextToken(t *testing.T) {

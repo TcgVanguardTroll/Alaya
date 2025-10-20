@@ -1,6 +1,6 @@
 package alaya_ast
 
-import token2 "Alaya/main/alaya_token"
+import token2 "github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 
 type Node interface {
 	TokenType() string
@@ -40,7 +40,7 @@ type Num struct {
 }
 
 func (n *Num) expressionNode() {}
-func (n *Num) TokenType() string { return n.Token.TokenType }
+func (n *Num) TokenType() string { return string(n.Token.TokenType) }
 func (n *Num) TokenValue() string { return n.Token.TokenValue }
 
 type BinOp struct {
@@ -50,7 +50,7 @@ type BinOp struct {
 }
 
 func (b *BinOp) expressionNode() {}
-func (b *BinOp) TokenType() string { return b.Op.TokenType }
+func (b *BinOp) TokenType() string { return string(b.Op.TokenType) }
 func (b *BinOp) TokenValue() string { return b.Op.TokenValue }
 
 type UnaryOp struct {
@@ -59,7 +59,7 @@ type UnaryOp struct {
 }
 
 func (u *UnaryOp) expressionNode() {}
-func (u *UnaryOp) TokenType() string { return u.Op.TokenType }
+func (u *UnaryOp) TokenType() string { return string(u.Op.TokenType) }
 func (u *UnaryOp) TokenValue() string { return u.Op.TokenValue }
 
 type Root struct {

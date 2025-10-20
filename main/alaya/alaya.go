@@ -4,8 +4,8 @@ package alaya
 	Imports needed for Alaya.
 */
 import (
-	"Alaya/main/alaya_ast"
-	"Alaya/main/alaya_parser"
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_ast"
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_parser"
 )
 
 /* Alaya Struct that we can use. */

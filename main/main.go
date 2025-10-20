@@ -1,10 +1,11 @@
 package main
 
 import (
-	"Alaya/main/alaya_repl"
 	"fmt"
 	"os"
 	"os/user"
+
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_repl"
 )
 
 func main() {

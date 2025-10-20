@@ -1,11 +1,9 @@
 package alaya_tokenizer
 
 import (
-	"Alaya/main/alaya_token"
-	"strings"
 	"errors"
 
-
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 )
 
 type Tokenizer struct {
@@ -68,7 +66,7 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 		token = alaya_token.New(alaya_token.LT, t.currentCharacter)
 	case '=':
 		if t.peek() == '=' {
-			token = alaya_token.New(alaya_token.ASCOMPARE, t.currentCharacter+string(t.peek()))
+			token = alaya_token.New(alaya_token.ASCOMPARE, string(t.currentCharacter)+string(t.peek()))
 			t.Advance()
 		} else {
 			token = alaya_token.New(alaya_token.AS, t.currentCharacter)
@@ -77,7 +75,7 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 		token = alaya_token.New(alaya_token.GT, t.currentCharacter)
 	case '!':
 		if t.peek() == '=' {
-			token = alaya_token.New(alaya_token.NotAs, t.currentCharacter+string(t.peek()))
+			token = alaya_token.New(alaya_token.NotAs, string(t.currentCharacter)+string(t.peek()))
 			t.Advance()
 		} else {
 			token = alaya_token.New(alaya_token.BANG, t.currentCharacter)
@@ -114,15 +112,13 @@ func (t *Tokenizer) GetNextToken() alaya_token.Token {
 		token = alaya_token.New(alaya_token.EOF, "")
 	default:
 		if isLetter(t.currentCharacter) {
-		token = t.readIdentifier()
-		return token
-		} 
-		else if isDigit(t.currentCharacter) {
-		token = t.readNumber()
-		return token
-		} 
-		else {
-		token = alaya_token.New(alaya_token.ILLEGAL, string(t.currentCharacter))
+			token = t.readIdentifier()
+			return token
+		} else if isDigit(t.currentCharacter) {
+			token = t.readNumber()
+			return token
+		} else {
+			token = alaya_token.New(alaya_token.ILLEGAL, string(t.currentCharacter))
 		}
 	}
 	t.Advance()

@@ -1,11 +1,12 @@
 package alaya_repl
 
 import (
-    "Alaya/main/alaya_parser"
-    "Alaya/main/alaya_tokenizer"
-    "bufio"
-    "fmt"
-    "io"
+	"bufio"
+	"fmt"
+	"io"
+
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_parser"
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_tokenizer"
 )
 
 const PROMPT = " ** "
