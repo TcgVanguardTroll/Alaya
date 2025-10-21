@@ -2,6 +2,7 @@ package alaya_tokenizer
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 )
@@ -10,6 +11,61 @@ type Tokenizer struct {
 	text             string
 	position         int
 	currentCharacter byte
+}
+
+// isLetter checks whether a character is a letter (a-z, A-Z) or underscore.
+// Similar to: Character.isLetter(ch) || ch == '_' in Java
+func isLetter(ch byte) bool {
+	return (ch >= 'a' && ch <= 'z') ||
+		(ch >= 'A' && ch <= 'Z') ||
+		ch == '_'
+}
+
+// isDigit checks whether a character is a digit (0-9).
+// Similar to: Character.isDigit(ch) in Java
+func isDigit(ch byte) bool {
+	return ch >= '0' && ch <= '9'
+}
+
+// readIdentifier reads a complete identifier or keyword from the source code.
+// Starts at the current position and reads all consecutive letter characters.
+// Returns a Token with the appropriate type (either a keyword or IDENT).
+//
+// Example: "name = 5" starting at 'n' will read "name" and return a NAME token
+func (t *Tokenizer) readIdentifier() alaya_token.Token {
+	// String builder to accumulate the identifier characters
+	var tokenText strings.Builder
+
+	// Keep reading while current character is a letter
+	// Similar to: while (position < text.length() && isLetter(currentCharacter))
+	for t.position < len(t.text) && isLetter(t.currentCharacter) {
+		tokenText.WriteByte(t.currentCharacter) // Add CURRENT character first
+		t.Advance()                              // Then move to next
+	}
+
+	// Look up if the identifier is a keyword or just a variable name
+	tokenType := alaya_token.LookupIdent(tokenText.String())
+
+	return alaya_token.Token{TokenType: tokenType, TokenValue: tokenText.String()}
+}
+
+// readNumber reads a complete number from the source code.
+// Starts at the current position and reads all consecutive digit characters.
+// Returns a Token with type INTEGER.
+//
+// Example: "123 + 456" starting at '1' will read "123" and return an INTEGER token
+func (t *Tokenizer) readNumber() alaya_token.Token {
+	// String builder to accumulate the digit characters
+	var tokenText strings.Builder
+
+	// Keep reading while current character is a digit
+	// Similar to: while (position < text.length() && isDigit(currentCharacter))
+	for t.position < len(t.text) && isDigit(t.currentCharacter) {
+		tokenText.WriteByte(t.currentCharacter) // Add CURRENT character first
+		t.Advance()                              // Then move to next
+	}
+
+	return alaya_token.Token{TokenType: alaya_token.INTEGER, TokenValue: tokenText.String()}
 }
 
 func (t *Tokenizer) peek() byte {

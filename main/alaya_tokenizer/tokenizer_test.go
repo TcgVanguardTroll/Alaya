@@ -56,8 +56,16 @@ func TestTokenizer_GetNextToken_Whitespace(t *testing.T) {
 
 func TestTokenizer_Identifier(t *testing.T) {
 	input := `Jordan9`
-	tokeinzer := New(input)
-	if tokeinzer.readIdentifier() != "Jordan" {
-		t.Fatal()
+	tokenizer := New(input)
+	token := tokenizer.readIdentifier()
+
+	// readIdentifier should read "Jordan" and stop at '9'
+	if token.TokenValue != "Jordan" {
+		t.Fatalf("expected TokenValue=%q, got=%q", "Jordan", token.TokenValue)
+	}
+
+	// Should be classified as IDENT (not a keyword)
+	if token.TokenType != token2.IDENT {
+		t.Fatalf("expected TokenType=%q, got=%q", token2.IDENT, token.TokenType)
 	}
 }
