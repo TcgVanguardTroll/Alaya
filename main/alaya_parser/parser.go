@@ -33,15 +33,15 @@ func (p *Parser) factor() int {
 	token := p.CurrentToken
 	if token.TokenType == alaya_token.INTEGER {
 		p.isMatch(alaya_token.INTEGER)
-		val, _ := strconv.Atoi(token.Value)
+		val, _ := strconv.Atoi(token.TokenValue)
 		return val
-	} else if token.TokenType == alaya_token.IDENTIFIER {
-		p.isMatch(alaya_token.IDENTIFIER)
-		val, _ := p.symbolTable[token.Value]
+	} else if token.TokenType == alaya_token.IDENT {
+		p.isMatch(alaya_token.IDENT)
+		val, _ := p.symbolTable[token.TokenValue]
 		return val
 	} else {
 		p.isMatch(alaya_token.LPAREN)
-		result := p.expr()
+		result := p.Expr()
 		p.isMatch(alaya_token.RPAREN)
 		return result
 	}
@@ -62,7 +62,10 @@ func (p *Parser) term() int {
 	return result
 }
 
-func (p *Parser) expr() int {
+// Expr parses and evaluates an expression (addition and subtraction).
+// This is the main entry point for parsing expressions.
+// Grammar: expr -> term ((PLUS | MINUS) term)*
+func (p *Parser) Expr() int {
 	result := p.term()
 	for p.CurrentToken.TokenType == alaya_token.PLUS || p.CurrentToken.TokenType == alaya_token.MINUS {
 		token := p.CurrentToken

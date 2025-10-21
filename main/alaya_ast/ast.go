@@ -6,6 +6,14 @@ type Node interface {
 	TokenType() string
 }
 
+// Statement represents a statement node in the AST.
+// All statement nodes must implement the Node interface and the statementNode() marker method.
+// Similar to: interface Statement extends Node in Java
+type Statement interface {
+	Node
+	statementNode()
+}
+
 type Condition interface {
 	Node
 	statementNode()
@@ -17,9 +25,9 @@ type AsStatement struct {
 	Value Expression
 }
 
-func (as *AsStatement) statementNode() {}
-
-func (as *AsStatement) TokenValue() string { return as.Token.TokenValue }
+func (as *AsStatement) statementNode()       {}
+func (as *AsStatement) TokenType() string    { return string(as.Token.TokenType) }
+func (as *AsStatement) TokenValue() string   { return as.Token.TokenValue }
 
 type Expression interface {
 	Node
@@ -32,6 +40,7 @@ type Identifier struct {
 }
 
 func (i *Identifier) expressionNode()    {}
+func (i *Identifier) TokenType() string  { return string(i.Token.TokenType) }
 func (i *Identifier) TokenValue() string { return i.Token.TokenValue }
 
 type Num struct {
