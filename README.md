@@ -135,6 +135,8 @@ Interactive shell for testing expressions with prompt `" ** "`
 
 ## Getting Started
 
+⚠️ **Important:** The project currently requires implementing 4 helper functions before it will compile. See [Implementation Guide](#implementation-guide) below.
+
 ### Prerequisites
 - Go 1.19 or higher
 - Git
@@ -155,7 +157,9 @@ Hello <username>! Welcome to the Alaya Programming Language!
  **
 ```
 
-### Example Usage
+### Example Usage (After Implementation)
+
+Once running, you can evaluate arithmetic expressions:
 
 Evaluate arithmetic expressions:
 
