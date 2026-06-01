@@ -7,6 +7,8 @@ import (
 	"github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 )
 
+// Tokenizer performs lexical analysis on Alaya source code.
+// It converts a string of source code into a sequence of tokens.
 type Tokenizer struct {
 	text             string
 	position         int
@@ -68,6 +70,8 @@ func (t *Tokenizer) backup(distance int) error {
 	return nil
 }
 
+// New creates a new Tokenizer for the given input string.
+// The tokenizer is initialized at position 0 with the first character.
 func New(input string) *Tokenizer {
 	var newTokenizer = &Tokenizer{text: input, position: 0}
 	newTokenizer.currentCharacter = newTokenizer.text[newTokenizer.position]
@@ -79,12 +83,16 @@ func (t *Tokenizer) skipComment() {
 		t.Advance()
 	}
 }
+
+// IgnoreWhitespace skips over whitespace characters (space, tab, newline, carriage return).
 func (t *Tokenizer) IgnoreWhitespace() {
 	for t.currentCharacter == ' ' || t.currentCharacter == '\t' || t.currentCharacter == '\n' || t.currentCharacter == '\r' {
 		t.Advance()
 	}
 }
 
+// Advance moves the tokenizer to the next character in the input.
+// Sets currentCharacter to 0 if the end of input is reached.
 func (t *Tokenizer) Advance() {
 	t.position += 1
 	if t.position >= len(t.text) {
@@ -93,6 +101,9 @@ func (t *Tokenizer) Advance() {
 		t.currentCharacter = t.text[t.position]
 	}
 }
+
+// GetNextToken reads and returns the next token from the input.
+// It handles whitespace, comments, operators, and identifiers/keywords.
 func (t *Tokenizer) GetNextToken() alaya_token.Token {
 	t.IgnoreWhitespace()
 	if t.currentCharacter == '#' {
