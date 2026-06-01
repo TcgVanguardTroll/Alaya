@@ -1,34 +1,50 @@
 # Alaya Programming Language
 
-A calculator-like programming language interpreter written in Go. This project serves as a learning experience for both Go programming and interpreter design, implementing a complete interpreter from scratch following classic compiler construction principles.
+🚧 **Status:** Active Development - Requires Implementation (4 functions) · 📚 **Purpose:** Learning Go + Interpreter Design
+
+A calculator-like programming language interpreter written in Go. This project serves as a hands-on learning experience for both Go programming and interpreter design, implementing a complete interpreter from scratch following classic compiler construction principles.
+
+> **⚡ Quick Start:** This is an **educational project** with intentionally incomplete code. You'll need to implement 4 helper functions (~30-60 minutes) to get the interpreter compiling and running. Perfect for learning! See [Implementation Guide](#implementation-guide).
 
 ## About
 
-**Alaya** is an interpreted programming language built using traditional compiler architecture: Lexer → Parser → Abstract Syntax Tree → Evaluator. The project demonstrates fundamental concepts in language implementation including tokenization, recursive descent parsing, tree-walking interpretation, and REPL design.
+**Alaya** is an interpreted programming language built using traditional compiler architecture: 
 
-**Author:** Jordan Grant ([@TcgVanguardTroll](https://github.com/TcgVanguardTroll))
-**License:** MIT
-**Language:** Go 1.19+
+```
+Source Code → Tokenizer → Parser → AST → Evaluator → Result
+```
 
-## Features
+The project demonstrates fundamental concepts in language implementation including tokenization, recursive descent parsing, tree-walking interpretation, and REPL design.
 
-### Currently Implemented
-- ✅ Lexical analysis with 20+ token types
+**Author:** Jordan Grant ([@TcgVanguardTroll](https://github.com/TcgVanguardTroll))  
+**License:** MIT  
+**Language:** Go 1.19+  
+**Inspired By:** "Writing An Interpreter In Go" by Thorsten Ball
+
+## Project Status
+
+⚠️ **Note:** This project is currently in active development and **does not compile yet**. Four helper functions need to be implemented before the interpreter will run (see [Development Status](#development-status) below).
+
+### Architecture Implemented
+- ✅ Lexical analysis structure with 20+ token types
 - ✅ Recursive descent parser with operator precedence
-- ✅ Abstract Syntax Tree (AST) representation
-- ✅ Tree-walking evaluator for arithmetic expressions
-- ✅ Interactive REPL (Read-Eval-Print Loop)
+- ✅ Abstract Syntax Tree (AST) node definitions
+- ✅ Tree-walking evaluator framework
+- ✅ Interactive REPL framework
 - ✅ Comment support (`#` line comments)
-- ✅ Symbol table for variable storage
-- ✅ Arithmetic operators: `+`, `-`, `*`, `/`
-- ✅ Comparison operators: `==`, `!=`, `<`, `>`
-- ✅ Parenthesized expressions
+- ✅ Symbol table structure
+- ✅ Token definitions for operators: `+`, `-`, `*`, `/`, `==`, `!=`, `<`, `>`
+- ✅ Parenthesized expression support
 
-### Planned Features
+### Ready to Implement (Next Steps)
+- 🔨 **4 tokenizer helper functions** (required for compilation)
+- 🔨 Statement interface definition
+
+### Planned Features (After Compilation)
 - ⏳ Variables and assignments (`name` keyword)
 - ⏳ Functions (`cmnd` keyword)
 - ⏳ Conditionals (`is`, `else` keywords)
-- ⏳ Boolean types (`true`, `false`)
+- ⏳ Boolean evaluation (`true`, `false`)
 - ⏳ Return statements
 - ⏳ Error handling and recovery
 
@@ -103,11 +119,13 @@ Interactive shell for testing expressions with prompt `" ** "`
 
 ## Getting Started
 
+⚠️ **Important:** The project currently requires implementing 4 helper functions before it will compile. See [Implementation Guide](#implementation-guide) below.
+
 ### Prerequisites
 - Go 1.19 or higher
 - Git
 
-### Installation
+### Setup
 
 ```bash
 # Clone the repository
@@ -117,13 +135,29 @@ cd Alaya
 # Download dependencies
 go mod tidy
 
-# Build the interpreter
+# Check compilation status (will show missing functions)
 go build -o alaya ./main
 ```
 
-### Running the REPL
+### Implementing Required Functions
+
+Before the interpreter will run, implement these 4 functions in `main/alaya_tokenizer/tokenizer.go`:
+1. `isLetter(ch byte) bool`
+2. `isDigit(ch byte) bool`
+3. `readIdentifier() Token`
+4. `readNumber() Token`
+
+See the [Implementation Guide](#implementation-guide) section for details.
+
+### After Implementation
+
+Once the functions are implemented, build and run:
 
 ```bash
+# Build the interpreter
+go build -o alaya ./main
+
+# Run the REPL
 ./alaya
 ```
 
@@ -133,7 +167,9 @@ Hello <username>! Welcome to the Alaya Programming Language!
  **
 ```
 
-### Example Usage
+### Example Usage (After Implementation)
+
+Once running, you can evaluate arithmetic expressions:
 
 ```
  ** 2 + 3 * 4
@@ -170,22 +206,38 @@ Hello <username>! Welcome to the Alaya Programming Language!
 
 ## Development Status
 
-### Current State
-The project is in active development. The core arithmetic calculator functionality is implemented and the architecture is in place for more advanced features.
+### 🚧 Current State: Does Not Compile
 
-### Known Issues
-The following functions need to be implemented for full functionality:
+The project architecture is **~95% complete**, but it **will not compile** until the following functions are implemented. This is **intentional** - these functions are core learning opportunities for understanding lexical analysis.
 
-**In `main/alaya_tokenizer/tokenizer.go`:**
-- `isLetter(ch byte) bool` - Check if character is a letter
-- `isDigit(ch byte) bool` - Check if character is a digit
-- `readIdentifier() Token` - Read complete identifier
-- `readNumber() Token` - Read complete number
+### ⚠️ Required for Compilation
 
-**In `main/alaya_ast/ast.go`:**
-- Define `Statement` interface for statement nodes
+**In `main/alaya_tokenizer/tokenizer.go` (Priority: CRITICAL):**
+- ❌ `isLetter(ch byte) bool` - Check if character is a letter (a-z, A-Z, _)
+- ❌ `isDigit(ch byte) bool` - Check if character is a digit (0-9)
+- ❌ `readIdentifier() Token` - Read complete identifier or keyword
+- ❌ `readNumber() Token` - Read complete integer
 
-These are intentionally left for learning purposes.
+**In `main/alaya_ast/ast.go` (Priority: Low):**
+- ❌ Define `Statement` interface for statement nodes (not blocking compilation of main features)
+
+### 📊 What Works Once Implemented
+
+After implementing the 4 tokenizer functions:
+- ✅ Tokenization of source code
+- ✅ Parsing arithmetic expressions
+- ✅ AST construction
+- ✅ Expression evaluation
+- ✅ Interactive REPL
+- ✅ Basic arithmetic calculator (`2 + 3 * 4`, parentheses, etc.)
+
+### 🎯 Why These Are Left Unimplemented
+
+These functions are **intentionally incomplete** as learning exercises:
+- They teach fundamental concepts in lexical analysis
+- They demonstrate Go string/byte manipulation
+- They're simple enough to implement in 30-60 minutes
+- They provide immediate satisfaction when the interpreter compiles and runs
 
 ## Learning Goals
 
@@ -226,39 +278,114 @@ go test -v ./...
 
 ## Implementation Guide
 
-### Implementing Missing Functions
+### 🛠️ Quick Start: Get It Compiling (30-60 minutes)
 
-**1. `isLetter(ch byte) bool`**
+Open `main/alaya_tokenizer/tokenizer.go` and add these 4 functions:
+
+#### **1. `isLetter(ch byte) bool`** ⭐ Start Here
 ```go
+// Add this function anywhere in the file (suggest after the New() function)
 func isLetter(ch byte) bool {
-    // Return true if ch is a-z, A-Z, or _
-    // Hint: Use byte comparison like ch >= 'a' && ch <= 'z'
+    return (ch >= 'a' && ch <= 'z') || 
+           (ch >= 'A' && ch <= 'Z') || 
+           ch == '_'
 }
 ```
 
-**2. `isDigit(ch byte) bool`**
+**What it does:** Checks if a byte is a valid identifier start/continuation character.
+
+**Learning:** Go byte comparisons, ASCII ranges
+
+---
+
+#### **2. `isDigit(ch byte) bool`** ⭐ 
 ```go
 func isDigit(ch byte) bool {
-    // Return true if ch is 0-9
+    return ch >= '0' && ch <= '9'
 }
 ```
 
-**3. `readIdentifier()`**
+**What it does:** Checks if a byte is a numeric digit.
+
+**Learning:** More byte operations, pattern recognition
+
+---
+
+#### **3. `readIdentifier() Token`** ⭐⭐ (Slightly harder)
 ```go
 func (t *Tokenizer) readIdentifier() alaya_token.Token {
-    // Build a string while isLetter(t.currentCharacter)
-    // Check if it's a keyword using Keywords map
-    // Return appropriate token (keyword or IDENT)
+    startPos := t.position
+    
+    // Read all letters and digits (identifiers can contain numbers after first char)
+    for isLetter(t.currentCharacter) || isDigit(t.currentCharacter) {
+        t.Advance()
+    }
+    
+    // Extract the complete identifier
+    identifier := t.text[startPos:t.position]
+    
+    // Check if it's a keyword (cmnd, name, is, else, true, false, return)
+    if tokenType, isKeyword := alaya_token.Keywords[identifier]; isKeyword {
+        return alaya_token.New(tokenType, identifier)
+    }
+    
+    // Not a keyword, so it's a regular identifier
+    return alaya_token.New(alaya_token.IDENT, identifier)
 }
 ```
 
-**4. `readNumber()`**
+**What it does:** Reads a complete identifier (like `myVariable` or keyword like `cmnd`) from the input.
+
+**Learning:** String slicing, loops, map lookups, distinguishing keywords from identifiers
+
+---
+
+#### **4. `readNumber() Token`** ⭐⭐
 ```go
 func (t *Tokenizer) readNumber() alaya_token.Token {
-    // Build a string while isDigit(t.currentCharacter)
-    // Return INTEGER token
+    startPos := t.position
+    
+    // Read all consecutive digits
+    for isDigit(t.currentCharacter) {
+        t.Advance()
+    }
+    
+    // Extract the complete number
+    number := t.text[startPos:t.position]
+    
+    return alaya_token.New(alaya_token.INTEGER, number)
 }
 ```
+
+**What it does:** Reads a complete integer (like `123` or `42`) from the input.
+
+**Learning:** Similar pattern to `readIdentifier`, demonstrates scanning patterns
+
+---
+
+### ✅ After Implementation
+
+```bash
+# Should now compile successfully!
+go build -o alaya ./main
+
+# Run tests
+go test ./main/alaya_tokenizer -v
+
+# Try the REPL
+./alaya
+```
+
+### 🧪 Test Your Implementation
+
+Try these in the REPL:
+```
+** 2 + 3
+** 10 * (5 - 2)
+** 100 / 4 + 6
+```
+
+If you see results, **congratulations! You have a working interpreter!** 🎉
 
 ## Contributing
 
