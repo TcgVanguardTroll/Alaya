@@ -1,10 +1,10 @@
 # Alaya Programming Language
 
-🚧 **Status:** Active Development - Requires Implementation (4 functions) · 📚 **Purpose:** Learning Go + Interpreter Design
+✅ **Status:** Fully Functional Arithmetic Interpreter · 📚 **Purpose:** Learning Go + Interpreter Design
 
 A calculator-like programming language interpreter written in Go. This project serves as a hands-on learning experience for both Go programming and interpreter design, implementing a complete interpreter from scratch following classic compiler construction principles.
 
-> **⚡ Quick Start:** This is an **educational project** with intentionally incomplete code. You'll need to implement 4 helper functions (~30-60 minutes) to get the interpreter compiling and running. Perfect for learning! See [Implementation Guide](#implementation-guide).
+> **⚡ It Works!** The interpreter is now **fully functional** for arithmetic expressions! Build it with `go build -o alaya ./main` and start calculating. See [Getting Started](#getting-started).
 
 ## About
 
@@ -23,22 +23,20 @@ The project demonstrates fundamental concepts in language implementation includi
 
 ## Project Status
 
-⚠️ **Note:** This project is currently in active development and **does not compile yet**. Four helper functions need to be implemented before the interpreter will run (see [Development Status](#development-status) below).
+✅ **The interpreter is fully functional!** All core features for arithmetic calculation are working.
 
-### Architecture Implemented
-- ✅ Lexical analysis structure with 20+ token types
+### Currently Working
+- ✅ Full lexical analysis with 20+ token types
 - ✅ Recursive descent parser with operator precedence
-- ✅ Abstract Syntax Tree (AST) node definitions
-- ✅ Tree-walking evaluator framework
-- ✅ Interactive REPL framework
+- ✅ Abstract Syntax Tree (AST) construction
+- ✅ Tree-walking evaluator for arithmetic
+- ✅ Interactive REPL with prompt
 - ✅ Comment support (`#` line comments)
-- ✅ Symbol table structure
-- ✅ Token definitions for operators: `+`, `-`, `*`, `/`, `==`, `!=`, `<`, `>`
-- ✅ Parenthesized expression support
-
-### Ready to Implement (Next Steps)
-- 🔨 **4 tokenizer helper functions** (required for compilation)
-- 🔨 Statement interface definition
+- ✅ Symbol table for variable storage (structure in place)
+- ✅ Arithmetic operators: `+`, `-`, `*`, `/`
+- ✅ Comparison operator tokens: `==`, `!=`, `<`, `>`
+- ✅ Parenthesized expressions
+- ✅ All helper functions implemented (isLetter, isDigit, readIdentifier, readNumber)
 
 ### Planned Features (After Compilation)
 - ⏳ Variables and assignments (`name` keyword)
@@ -119,39 +117,11 @@ Interactive shell for testing expressions with prompt `" ** "`
 
 ## Getting Started
 
-⚠️ **Important:** The project currently requires implementing 4 helper functions before it will compile. See [Implementation Guide](#implementation-guide) below.
-
 ### Prerequisites
 - Go 1.19 or higher
 - Git
 
-### Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/TcgVanguardTroll/Alaya.git
-cd Alaya
-
-# Download dependencies
-go mod tidy
-
-# Check compilation status (will show missing functions)
-go build -o alaya ./main
-```
-
-### Implementing Required Functions
-
-Before the interpreter will run, implement these 4 functions in `main/alaya_tokenizer/tokenizer.go`:
-1. `isLetter(ch byte) bool`
-2. `isDigit(ch byte) bool`
-3. `readIdentifier() Token`
-4. `readNumber() Token`
-
-See the [Implementation Guide](#implementation-guide) section for details.
-
-### After Implementation
-
-Once the functions are implemented, build and run:
+### Installation & Running
 
 ```bash
 # Build the interpreter
@@ -167,9 +137,9 @@ Hello <username>! Welcome to the Alaya Programming Language!
  **
 ```
 
-### Example Usage (After Implementation)
+### Example Usage
 
-Once running, you can evaluate arithmetic expressions:
+Evaluate arithmetic expressions:
 
 ```
  ** 2 + 3 * 4
