@@ -6,6 +6,7 @@ package alaya
 import (
 	"github.com/TcgVanguardTroll/Alaya/main/alaya_ast"
 	"github.com/TcgVanguardTroll/Alaya/main/alaya_parser"
+	"github.com/TcgVanguardTroll/Alaya/main/alaya_token"
 )
 
 /* Alaya Struct that we can use. */
@@ -23,31 +24,30 @@ type Alaya struct {
 *
 * @param {alaya_ast.AST} ast - A node of the AST representing a numerical value or an arithmetic expression.
 * @return {int} - The numerical value represented by the passed in AST node.
-*/
+ */
 func (a *Alaya) visitNum(ast alaya_ast.AST) int {
-    switch n := ast.(type) {
-    case *alaya_ast.Num:
-        return n.Value
-    case *alaya_ast.BinOp:
-        switch n.Op.Type {
-        case alaya_parser.PLUS:
-            return a.visitNum(n.Left) + a.visitNum(n.Right)
-        case alaya_parser.MINUS:
-            return a.visitNum(n.Left) - a.visitNum(n.Right)
-        case alaya_parser.MUL:
-            return a.visitNum(n.Left) * a.visitNum(n.Right)
-        case alaya_parser.DIV:
-            return a.visitNum(n.Left) / a.visitNum(n.Right)
-        }
-    case *alaya_ast.UnaryOp:
-        switch n.Op.Type {
-        case alaya_parser.PLUS:
-            return a.visitNum(n.Expr)
-        case alaya_parser.MINUS:
-            return -1 * a.visitNum(n.Expr)
-        }
-    default:
-        // Handle other types of nodes or raise an error.
-        return -1
-    }
+	switch n := ast.(type) {
+	case *alaya_ast.Num:
+		return n.Value
+	case *alaya_ast.BinOp:
+		switch n.Op.TokenType {
+		case alaya_token.PLUS:
+			return a.visitNum(n.Left) + a.visitNum(n.Right)
+		case alaya_token.MINUS:
+			return a.visitNum(n.Left) - a.visitNum(n.Right)
+		case alaya_token.ASTERISK:
+			return a.visitNum(n.Left) * a.visitNum(n.Right)
+		case alaya_token.SLASH:
+			return a.visitNum(n.Left) / a.visitNum(n.Right)
+		}
+	case *alaya_ast.UnaryOp:
+		switch n.Op.TokenType {
+		case alaya_token.PLUS:
+			return a.visitNum(n.Expr)
+		case alaya_token.MINUS:
+			return -1 * a.visitNum(n.Expr)
+		}
+	}
+	// Handle other types of nodes or unrecognized operators.
+	return -1
 }

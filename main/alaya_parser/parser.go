@@ -7,15 +7,17 @@ import (
 	"github.com/TcgVanguardTroll/Alaya/main/alaya_tokenizer"
 )
 
-type (
-	Parser struct {
-		Tokenizer    *alaya_tokenizer.Tokenizer
-		CurrentToken alaya_token.Token
-		NextToken    alaya_token.Token
-		symbolTable  map[string]int
-	}
-)
+// Parser implements a recursive descent parser for Alaya expressions.
+// It maintains the current token, tokenizer, and a symbol table for variables.
+type Parser struct {
+	Tokenizer    *alaya_tokenizer.Tokenizer
+	CurrentToken alaya_token.Token
+	NextToken    alaya_token.Token
+	symbolTable  map[string]int
+}
 
+// NewParser creates a new Parser with the given tokenizer.
+// Initializes an empty symbol table for storing variables.
 func NewParser(tokenizer *alaya_tokenizer.Tokenizer) *Parser {
 	return &Parser{Tokenizer: tokenizer, symbolTable: make(map[string]int)}
 }

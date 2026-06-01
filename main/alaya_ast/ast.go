@@ -25,14 +25,18 @@ type AsStatement struct {
 	Value Expression
 }
 
-func (as *AsStatement) statementNode()       {}
-func (as *AsStatement) TokenType() string    { return string(as.Token.TokenType) }
-func (as *AsStatement) TokenValue() string   { return as.Token.TokenValue }
+func (as *AsStatement) statementNode()     {}
+func (as *AsStatement) TokenType() string  { return string(as.Token.TokenType) }
+func (as *AsStatement) TokenValue() string { return as.Token.TokenValue }
 
 type Expression interface {
 	Node
 	expressionNode()
 }
+
+// AST is a type alias for Expression nodes in the abstract syntax tree.
+// Used by the evaluator to process and evaluate expressions.
+type AST = Expression
 
 type Identifier struct {
 	Token token2.Token
@@ -44,12 +48,12 @@ func (i *Identifier) TokenType() string  { return string(i.Token.TokenType) }
 func (i *Identifier) TokenValue() string { return i.Token.TokenValue }
 
 type Num struct {
-    Token token2.Token
-    Value int
+	Token token2.Token
+	Value int
 }
 
-func (n *Num) expressionNode() {}
-func (n *Num) TokenType() string { return string(n.Token.TokenType) }
+func (n *Num) expressionNode()    {}
+func (n *Num) TokenType() string  { return string(n.Token.TokenType) }
 func (n *Num) TokenValue() string { return n.Token.TokenValue }
 
 type BinOp struct {
@@ -58,8 +62,8 @@ type BinOp struct {
 	Op    token2.Token
 }
 
-func (b *BinOp) expressionNode() {}
-func (b *BinOp) TokenType() string { return string(b.Op.TokenType) }
+func (b *BinOp) expressionNode()    {}
+func (b *BinOp) TokenType() string  { return string(b.Op.TokenType) }
 func (b *BinOp) TokenValue() string { return b.Op.TokenValue }
 
 type UnaryOp struct {
@@ -67,8 +71,8 @@ type UnaryOp struct {
 	Expr Expression
 }
 
-func (u *UnaryOp) expressionNode() {}
-func (u *UnaryOp) TokenType() string { return string(u.Op.TokenType) }
+func (u *UnaryOp) expressionNode()    {}
+func (u *UnaryOp) TokenType() string  { return string(u.Op.TokenType) }
 func (u *UnaryOp) TokenValue() string { return u.Op.TokenValue }
 
 type Root struct {
