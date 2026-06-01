@@ -1,20 +1,38 @@
+<div align="center">
+
+<img src="https://static.wikia.nocookie.net/typemoon/images/3/33/CF.png/revision/latest/scale-to-width-down/1000?cb=20210124221908" alt="Alaya Logo" width="200"/>
+
 # Alaya Programming Language
 
-✅ **Status:** Fully Functional Arithmetic Interpreter · 📚 **Purpose:** Learning Go + Interpreter Design
+**The Counter Force of Code Interpretation**
 
-A calculator-like programming language interpreter written in Go. This project serves as a hands-on learning experience for both Go programming and interpreter design, implementing a complete interpreter from scratch following classic compiler construction principles.
+[![Go Version](https://img.shields.io/badge/Go-1.19+-00ADD8?style=for-the-badge&logo=go)](https://golang.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Functional-success?style=for-the-badge)](https://github.com/TcgVanguardTroll/Alaya)
 
-> **⚡ It Works!** The interpreter is now **fully functional** for arithmetic expressions! Build it with `go build -o alaya ./main` and start calculating. See [Getting Started](#getting-started).
+*A calculator-like programming language interpreter written in Go*
 
-## About
+[Getting Started](#getting-started) • [Features](#project-status) • [Architecture](#architecture) • [Examples](#example-usage)
 
-**Alaya** is an interpreted programming language built using traditional compiler architecture: 
+---
+
+</div>
+
+## 🌟 About
+
+**Alaya** is an interpreted programming language built using traditional compiler architecture, named after the Counter Force from Type-Moon's Nasuverse - representing the collective unconscious of humanity, a fitting metaphor for an interpreter that processes and understands human-written code.
+
+### Pipeline Architecture
 
 ```
 Source Code → Tokenizer → Parser → AST → Evaluator → Result
 ```
 
 The project demonstrates fundamental concepts in language implementation including tokenization, recursive descent parsing, tree-walking interpretation, and REPL design.
+
+> **⚡ Fully Functional!** The interpreter is now complete for arithmetic expressions. Build it with `go build -o alaya ./main` and start calculating!
+
+---
 
 **Author:** Jordan Grant ([@TcgVanguardTroll](https://github.com/TcgVanguardTroll))  
 **License:** MIT  
@@ -380,9 +398,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by the classic books on interpreter and compiler design
 - Built as a learning project to understand Go and language implementation
 - Thanks to the Go community for excellent documentation and tools
+- Logo: Alaya (Counter Force) from Type-Moon's Fate/Nasuverse © TYPE-MOON
 
 ---
 
+<div align="center">
+
 **Happy Interpreting!** 🚀
 
-For questions or feedback, open an issue on GitHub.
+*"The collective unconscious of humanity, interpreting the will of developers"*
+
+For questions or feedback, [open an issue](https://github.com/TcgVanguardTroll/Alaya/issues)
+
+</div>
