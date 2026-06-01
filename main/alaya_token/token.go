@@ -106,10 +106,3 @@ func New(TokenType Type, TokenValue interface{}) Token {
 		TokenValue: value,
 	}
 }
-
-func LookupIdent(ident string) Type {
-	if tok, ok := Keywords[ident]; ok {
-		return tok
-	}
-	return IDENT
-}
